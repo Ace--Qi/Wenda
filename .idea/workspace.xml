@@ -2,73 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c5a77145-9411-4a6d-9c98-cb2c6a48700e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/assets/css/star-rating.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/assets/css/star-rating.min.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/assets/js/star-rating.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/assets/js/star-rating.min.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/items.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/items.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/middlewares.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/pipelines.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/scrapy.cfg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/settings.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/spiders/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tutorial/spiders/dmoz_spider.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid23713.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid24104.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid2721.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid2780.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid3114.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid4093.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid6085.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid6145.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/hs_err_pid6332.log" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/MeCab.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/MeCab_wrap.cxx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/PKG-INFO" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/README" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/build/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/build/lib.macosx-10.12-intel-2.7/MeCab.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/build/lib.macosx-10.12-intel-2.7/_MeCab.so" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/build/lib.macosx-10.12-intel-2.7/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/build/temp.macosx-10.12-intel-2.7/MeCab_wrap.o" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab-python-0.996/setup.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab_chinese_data_binary_v0.3/char.bin" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab_chinese_data_binary_v0.3/dicrc" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab_chinese_data_binary_v0.3/matrix.bin" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab_chinese_data_binary_v0.3/model.bin" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab_chinese_data_binary_v0.3/readme" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab_chinese_data_binary_v0.3/sys.dic" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mecab_chinese_data_binary_v0.3/unk.dic" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/dist/build.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/dist/build.js.map" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/bg.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/package.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/src/App.vue" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/src/components/card.vue" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/src/components/list.vue" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/src/components/message.vue" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/src/components/text.vue" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/src/main.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/src/store.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/webpack.config.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/templates/student.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources/db5aebf0-99fc-409a-ab49-9b88cf7be37a.xml" afterPath="$PROJECT_DIR$/.idea/dataSources/db5aebf0-99fc-409a-ab49-9b88cf7be37a.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/wenda.iml" afterPath="$PROJECT_DIR$/.idea/wenda.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jieba/analyse/idf.txt" afterPath="$PROJECT_DIR$/jieba/analyse/idf.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/students/admin.py" afterPath="$PROJECT_DIR$/students/admin.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/students/models.py" afterPath="$PROJECT_DIR$/students/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/students/views.py" afterPath="$PROJECT_DIR$/students/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/QuestionAnswerView.html" afterPath="$PROJECT_DIR$/templates/QuestionAnswerView.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wenda/urls.py" afterPath="$PROJECT_DIR$/wenda/urls.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/assets/css/star-rating.css" afterPath="$PROJECT_DIR$/static/assets/css/star-rating.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/assets/css/star-rating.min.css" afterPath="$PROJECT_DIR$/static/assets/css/star-rating.min.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/assets/js/star-rating.js" afterPath="$PROJECT_DIR$/static/assets/js/star-rating.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/assets/js/star-rating.min.js" afterPath="$PROJECT_DIR$/static/assets/js/star-rating.min.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -141,7 +78,7 @@
         <entry file="file://$PROJECT_DIR$/wenda/urls.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="495">
-              <caret line="37" column="40" lean-forward="true" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="40" />
+              <caret line="37" column="40" lean-forward="false" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -260,7 +197,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.eslint.eslintPackage" value="" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="settings.editor.selected.configurable" value="settings.github" />
+    <property name="settings.editor.selected.configurable" value="vcs.CVS" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="MySQL" />
     <property name="ChangesBrowser.SHOW_FLATTEN" value="false" />
   </component>
@@ -606,6 +543,14 @@
       <option name="presentableId" value="Default" />
       <updated>1486182926113</updated>
     </task>
+    <task id="LOCAL-00001" summary="update">
+      <created>1510215499431</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1510215499431</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -634,12 +579,12 @@
   <component name="ToolWindowManager">
     <frame x="4" y="21" width="1440" height="851" extended-state="0" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3090129" sideWeight="0.47782257" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3090129" sideWeight="0.47782257" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3277635" sideWeight="0.48855507" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36246786" sideWeight="0.6316166" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16380544" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3277635" sideWeight="0.48569384" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3287858" sideWeight="0.4914163" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3287858" sideWeight="0.4914163" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32647815" sideWeight="0.45422032" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20327422" sideWeight="0.3683834" order="9" side_tool="false" content_ui="tabs" x="20" y="548" width="1398" height="273" />
@@ -687,6 +632,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -964,6 +913,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="570">
           <caret line="41" column="24" lean-forward="false" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1022,7 +972,7 @@
     <entry file="file://$PROJECT_DIR$/wenda/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
-          <caret line="37" column="40" lean-forward="true" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="40" />
+          <caret line="37" column="40" lean-forward="false" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="40" />
           <folding />
         </state>
       </provider>
