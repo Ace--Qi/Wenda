@@ -9,7 +9,9 @@
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="upper" />
       <secret-storage>master_key</secret-storage>
       <user-name>root</user-name>
+      <introspection-schemas>*:AnswerQuestionSql</introspection-schemas>
       <resolve-scope>AnswerQuestionSql:</resolve-scope>
+      <unqualified-resolve-schemas>AnswerQuestionSql:</unqualified-resolve-schemas>
     </data-source>
   </component>
 </project>

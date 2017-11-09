@@ -10,41 +10,55 @@
     <!-- Custom styles for this template -->
     <link href="/static/assets/css/style.css" rel="stylesheet">
     <link href="/static/assets/css/style-responsive.css" rel="stylesheet">
+    <link href="/static/assets/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" />
     <script src="/static/assets/js/jquery.js"></script>
     <script src="/static/assets/js/bootstrap.min.js"></script>
     <script src="/static/assets/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="/static/assets/js/star-rating.min.js" type="text/javascript"></script>
 </head>
 <body>
+
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">学生／教师评价</h4>
-            </div>
-            <div class="modal-body">你对小白给出的答案还满意么</div>
-            <div class="modal-footer">
-                <button  type="button" class="btn btn-default" data-dismiss="modal" onclick="unsatisfied()">不满意</button>
-                <button  type="button" class="btn btn-primary" data-dismiss="modal" onclick="satisfied()">满意</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					请输入您的答案
+				</h4>
+			</div>
+            <textarea  id="defineanswer" style="width: 595px;height: 100px;-moz-border-radius:7px; -webkit-border-radius: 7px;margin-left: 2px;margin-top: 5px"></textarea>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="button" class="btn btn-primary" onclick="sumbitdefine()" data-dismiss="modal">
+					提交
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
 </div>
-<script >
-     $.ajaxSetup({
-            data: {csrfmiddlewaretoken: 'Pe7GdDTK8lqfVQGrLsHkl472ed5ty7IR'},
-        });
-        function unsatisfied() {
+<script>
+    function sumbitdefine() {
+        if ($("#defineanswer").val()=="") {
+            alert("输入答案不能为空");
+            return false;
+        }
+        else
+        {
             $.ajax({
                 type: "POST",
-                url: "/evaluation",
+                url: "/defineanswer",
                 data: {
-                    "evaluation": 0,
-                    "i":questionid,
+                    "deanswer": $("#defineanswer").val(),
+                    "deqid": defineqid.attr("value"),
                 },
                 success: function (data, textStatus) {
-
+                    defineqid.next("span").text(" 自定义答案：" + $("#defineanswer").val());
+                    $("#defineanswer").val("");
                 }
                 ,
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -53,27 +67,8 @@
             });
             return false;
         }
-        function satisfied() {
-            $.ajax({
-                type: "POST",
-                url: "/evaluation",
-                data: {
-                    "evaluation": 1,
-                    "i":questionid,
-
-                },
-                success: function (data, textStatus) {
-
-                }
-                ,
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert(XMLHttpRequest.responseText);
-                }
-            });
-            return false;
-        }
-
-    </script>
+    }
+</script>
 <section id="container">
     <!-- **********************************************************************************************************************************************************
     TOP BAR CONTENT & NOTIFICATIONS
@@ -81,16 +76,48 @@
     <!--header start-->
     <header class="header black-bg">
         <div class="sidebar-toggle-box">
-            <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+
         </div>
         <!--logo start-->
-        <a href="/test/index/" class="logo"><b>计算机语言作业平台</b></a>
+        <a href="" class="logo"><b>计算机学院答疑平台</b></a>
+        <div class="btn-group" style="float: right;margin-top:1%" >
+		<button id="1" type="button" class="btn btn-primary" onclick="change_normal()">普通模式</button>
+		<button id="2" type="button" class="btn btn-default" onclick="change_test()">调教模式</button>
+  </div>
         <!--logo end-->
         <div class="nav notify-row" id="top_menu">
             <!--  notification start -->
             <!--  notification end -->
         </div>
     </header>
+   <script>
+       function change_normal() {
+           location.reload();
+           systemmodel=1;
+            $("#evalutiondiv").show();
+          if($("#1").hasClass("btn btn-default")) {
+              $("#1").removeClass("btn btn-default");
+              $("#1").addClass("btn btn-primary");
+          }
+          if($("#2").hasClass("btn btn-primary")) {
+              $("#2").removeClass("btn btn-primary");
+              $("#2").addClass("btn btn-default");
+          }
+
+       }
+       function change_test() {
+           systemmodel=2;
+           $("#evalutiondiv").hide();
+            if($("#2").hasClass("btn btn-default")) {
+              $("#2").removeClass("btn btn-default");
+              $("#2").addClass("btn btn-primary");
+          }
+          if($("#1").hasClass("btn btn-primary")) {
+              $("#1").removeClass("btn btn-primary");
+              $("#1").addClass("btn btn-default");
+          }
+       }
+   </script>
     <!--header end-->
 
     <!-- **********************************************************************************************************************************************************
@@ -148,23 +175,90 @@
         </section>
         <! --/wrapper -->
     </section><!-- /MAIN CONTENT -->
+    <!-- 用户评价部分 -->
+    <div id="evalutiondiv">
+<font color="black" size="4">请您对本次服务进行评价</font>     <button
+        id="submitevalutionstar" type="submit" class="btn btn-vmaig-auth" style="background-color: lightgray;color: indianred" onclick="SubmitEvalutionStar()">提交评价</button>
+ <input id="Evaluation" type="number" class="rating" min=0 max=5 step=0.5 data-size="sm" >
+    </div>
+    <script>
 
+        function SubmitEvalutionStar() {
+            //alert($("#answerquestion").children().text());
+            var dates = new Date();
+            var months = dates.getMonth() + 1;
+            var strDates = dates.getDate();
+            if (months >= 1 && months <= 9) {
+                months = "0" + months;
+            }
+            if (strDates >= 0 && strDates <= 9) {
+                strDates = "0" + strDates;
+            }
+            var lasttime = dates.getFullYear() + "-" + months + "-" + strDates
+                    + " " + dates.getHours() + "：" + dates.getMinutes()
+                    + "：" + dates.getSeconds();
+            var time=firsttime+"至"+lasttime;
+            $.ajax({
+                type: "POST",
+                url: "/star",
+                data: {
+                    "stareva": $("#Evaluation").val(),
+                    "wholecontent":$("#answerquestion").children().text(),
+                    "time":time,
+                },
+                success: function (data, textStatus) {
+                    alert("感谢您的反馈");
+                   location.reload();
+                }
+                ,
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.responseText);
+                }
+            });
+            return false;
+        }
+        window.onload = function() {
+             var date = new Date();
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            firsttime = date.getFullYear() + "-" + month + "-" + strDate
+                    + " " + date.getHours() + "：" + date.getMinutes()
+                    + "：" + date.getSeconds();
+                }
+    </script>
     <!--main content end-->
     <!--footer start-->
     <footer class="footer">
         <p class="pull-left"></p>
-        <p class="pull-right">&copy; 南京邮电大学 计算机学院 软件教学中心 2016</p>
+        <p class="pull-right">&copy; 南京邮电大学 计算机学院 软件教学中心 2017</p>
     </footer>
     <!--footer end-->
 </section>
 
+<!--提交问题请求-->
  <script >
+     var defineqid;
+     var firsttime;
+     var systemmodel=1;
+     var evaluation;
+     var baiduevaluation;
      var questionid;
      $.ajaxSetup({
             data: {csrfmiddlewaretoken: 'Pe7GdDTK8lqfVQGrLsHkl472ed5ty7IR'},
         });
         $('#vmaig-auth-login-form').submit(function (event) {
             event.preventDefault();
+            if ($("#inputquestion").val()=="")
+            {
+                 alert("输入不能为空");
+                 return false;
+            }
             $.ajax({
                 type: "POST",
                 url: "/send",
@@ -173,12 +267,34 @@
 
                 },
                 success: function (data, textStatus) {
-                    var message=data["text"];
-                    $("#answerquestion").append("<li>"+$("#inputquestion").val()+"</li>")
-                    $("#answerquestion").append("<li>"+message+"</li>")
-                    $("#answerquestion").scrollTop($("#answerquestion")[0].scrollHeight);
-                    questionid=data["answerid"];
-                    var t=setTimeout("$('#myModal').modal('show')",3000);
+                    var message="知识库答案："+data["text"];
+                    var message1="图灵的答案："+data["tulingtext"];
+                    var message2="百度的答案："+data["baidutext"];
+
+                    if(systemmodel==2) {
+                        var qid = data["answerid"];
+                        if (qid == 0)
+                            qid = data["tulinganswerid"];
+                        var temp = "<input onclick='Rdclick3(this)' data-baidu='' type='radio' name='answer'" + " value=" + qid + " />" + " " + message2
+                        var defineanswer="<input onclick='Rdclick4(this)' data-define='' type='radio' name='answer'" + " value=" + qid + " />" + "<span>"+" 输入您认为正确的答案，点击按钮弹出输入框"+"</span>"
+                        $("#answerquestion").append("<li>" + $("#inputquestion").val() + "</li>");
+                        var linum = $("#answerquestion").children().length + 1;
+                        $('#inputquestion').val("");
+                        if (data["tulingurl"] == "")
+                            $("#answerquestion").append("<li id=" + linum + ">" + "请在以下三种答案中选择您最满意的答案or给出您的答案" + "<form action='' method=''>" + "<br>"+ "<input onclick='Rdclick1(this)' type='radio' data-local=" + data["text"] + " checked='checked' name='answer' value=" + qid + " />" + " " + message + "<br/>" + "<input onclick='Rdclick2(this)' type='radio' data-tuling=" + data["tulingtext"] + " name='answer' value=" + qid + " />" + " " + message1 + "<br/>" + temp +"<br>" +defineanswer+ "</form>" + "</li>")
+                        else
+                            $("#answerquestion").append("<li id=" + linum + ">" + "请在以下三种答案中选择您最满意的答案or给出您的答案" + "<form action='' method=''>" + "<br>" + "<input onclick='Rdclick1(this)' type='radio' data-local=" + data["text"] + " checked='checked' name='answer' value=" + qid + " />" + " " + message + "<br/>" + "<input onclick='Rdclick2(this)' type='radio' data-tuling=" + data["tulingtext"] + " name='answer' value=" + qid + " />" + " " + message1 + "<a text-decoration='underline' target='_blank' href=" + data["tulingurl"] + ">" + " 信息链接" + "</a>" + "<br/>" + temp +"<br>" +defineanswer+"</form>" + "</li>")
+                        $("#answerquestion").scrollTop($("#answerquestion")[0].scrollHeight);
+                        questionid = data["answerid"];
+                    }
+                    else {
+                         $("#answerquestion").append("<li>" + $("#inputquestion").val() + "</li>");
+                         $('#inputquestion').val("");
+                         $("#answerquestion").append("<li>" + data["text"] + "</li>");
+                          $("#answerquestion").scrollTop($("#answerquestion")[0].scrollHeight);
+                    }
+                    //if (a==1)
+                    //    var t=setTimeout("$('#myModal').modal('show')",3000);
                     }
                 ,
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -188,7 +304,67 @@
             return false;
         });
     </script>
+
+
+
+<script type="text/javascript">
+  function Rdclick1(obj) {
+      if(systemmodel==2)
+          chooseanswer($(obj).attr("value"),$(obj).attr("data-local"),0)
+      else
+          alert("请切换至调教模式，当前选择的答案不保存")
+  }
+  function Rdclick2(obj) {
+       if(systemmodel==2)
+          chooseanswer($(obj).attr("value"),$(obj).attr("data-tuling"),0);
+       else
+          alert("请切换至调教模式，当前选择的答案不保存")
+  }
+  function Rdclick3(obj) {
+       if(systemmodel==2)
+           chooseanswer($(obj).attr("value"),$(obj).attr("data-baidu"),1);
+      else
+          alert("请切换至调教模式，当前选择的答案不保存")
+  }
+  function Rdclick4(obj) {
+       if(systemmodel==2) {
+           //$(obj).attr("disabled", "disabled");
+           $('#myModal').modal('show');
+           defineqid=$(obj);
+           if ($(obj).next("span").text()!=" 输入您认为正确的答案，点击按钮弹出输入框") {
+               var s = $(obj).next("span").text()
+               s=s.split(' 您自定义的答案：')[1];
+               $("#defineanswer").val(s);
+           }
+           else
+              $("#defineanswer").val("");
+       }
+      else
+          alert("请切换至调教模式，当前选择的答案不保存")
+  }
+  function chooseanswer(questionid,questionanswer,forbaidu){
+      $.ajax({
+                type: "POST",
+                url: "/csanswer",
+                data: {
+                    "qid": questionid,
+                    "qanswer":questionanswer,
+                    "isbaidu":forbaidu,
+                },
+                success: function (data, textStatus) {
+
+
+                }
+                ,
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.responseText);
+                }
+            });
+            return false;
+  }
+</script>
 <!-- js placed at the end of the document so the pages load faster -->
+
 <script src="/static/assets/js/jquery.ui.touch-punch.min.js"></script>
 <script class="include" type="text/javascript" src="/static/assets/js/jquery.dcjqaccordion.2.7.js"></script>
 <script src="/static/assets/js/jquery.scrollTo.min.js"></script>
@@ -197,6 +373,8 @@
 
 <!--common script for all pages-->
 <script src="/static/assets/js/common-scripts.js"></script>
+<!--判断页面关闭.页面刷新-->
+
 <!--script for this page-->
 
 </body>

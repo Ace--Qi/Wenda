@@ -1,3 +1,4 @@
+# encoding: utf-8
 """wenda URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -20,11 +21,18 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import staticfiles
 
 urlpatterns = [
+   #数据库
    url(r'^admin/', admin.site.urls),
-   url(r'^student/',students.views.sayHello,name='sayHello'),
-   url(r'^showStudents/', students.views.showStudents,name='showStudents'),
+   #问答主页
    url(r'^showQuestion/', students.views.showQuestion,name='showQuestion'),
+   #请求问题
    url(r'send$', students.views.send, name='send'),
-   url(r'evaluation$', students.views.evaluation, name='evaluation'),
+   #是否对图灵的答案满意
+   #url(r'evaluation$', students.views.evaluation, name='evaluation'),
+   #是否对百度的答案满意
+   url(r'csanswer$', students.views.csanswer, name='csanswer'),
+   #对此次会话的评价
+   url(r'star$',students.views.star,name='star'),
+   url(r'defineanswer$',students.views.defineanswer,name='defineanswer')
 ]
 urlpatterns += staticfiles_urlpatterns()

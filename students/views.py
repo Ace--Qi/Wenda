@@ -10,40 +10,68 @@ jieba.load_userdict("./extra_dict/userdict.txt")
 import jieba.posseg as pseg
 import jieba.analyse
 import MeCab
+import zlib
+import  difflib
 import requests
+import  tutorial
 import os
+import  scrapy
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.http import JsonResponse
+from tutorial.spiders.dmoz_spider import DmozSpider
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Faq
+from .models import UserSession
 from jpype import  *
 import json
 #from django.views.decorators.csrf import csrf_protect
 # Create your views here.
-def sayHello(request):
-    s="dad"
-    current_time = datetime.datetime.now()
-    html = '<html><head></head><body><h1> %s </h1><p> %s </p></body></html>' % (s, current_time)
-    return HttpResponse(html)
-def showStudents(request):
-     list = [{id: 1, 'name': 'Jack'}, {id: 2, 'name': 'Rose'}]
-     return render_to_response('student.html',{'students': list})
-
 #@csrf_protect
+from scrapy.crawler import CrawlerProcess
+from scrapy import signals,log
+from twisted.internet import reactor
+from scrapy.crawler import Crawler
+from scrapy.settings import Settings
+from scrapy.crawler import CrawlerRunner
+global questionurl,questionsen
+questionurl=""
+questionsen=""
 def showQuestion(request):
     return render(request, 'QuestionAnswerView.html')
 
 def send(request):
+    json_data = {}
     if request.method == 'POST':
         receive = request.POST['question']
         sentence = receive.encode("utf-8")
-       # seg_list = jieba.cut(sentence, cut_all=False)
+
+        # 爬虫百度答案
+        global questionurl, questionsen
+        questionurl = "https://zhidao.baidu.com/search?ct =17&pn=0&tn=ikaslist&rn=10&word=" + sentence
+        questionsen = sentence
+        runner = CrawlerRunner()
+        d = runner.crawl(DmozSpider, start_urls=[questionurl])
+        d.addBoth(lambda _: reactor.crash())
+        reactor.run()
+        with open("/Users/wangqi/PycharmProjects/wenda/tutorial/items.json", "r") as f:
+            message = json.load(f)
+        s = message["desc"].encode("utf-8")
+        a = message["title"].encode("utf-8")
+        # json_data['baidu'] = 1
+        json_data['baidutext'] = s
+        if json_data['baidutext'] == "":
+            json_data['baidutext'] = message["answer"].encode("utf-8")
+        if json_data['baidutext'] == "":
+            json_data['baidutext'] = "百度也不知道呢"
+        # global question
+        json_data['baiduquestion'] = questionsen
+        f.close()
+        # seg_list = jieba.cut(sentence, cut_all=False)
        #print("Default Mode: " + "/ ".join(seg_list))  # 默认模式
 
         tags = jieba.analyse.extract_tags(sentence, topK=20)
         keyword=",".join(tags)
-        print(keyword)
         keyword_num=0
         last_match_keynum = 1
         num=len(tags)
@@ -57,186 +85,195 @@ def send(request):
             keyword=tags[0]+","+tags[1]+","+tags[2]+","+tags[3]+","+tags[4]
         else:
             keyword=sentence
-        print(keyword)
-        json_data = {}
+        print "Participles keywords (no more than 5) "+keyword
+
         try:
             message = Faq.objects.get(question_content=receive)
         except ObjectDoesNotExist:
             if keyword_num!=0 :
                data = Faq.objects.filter(question_keyword__contains=tags[0])
-               for i in range(1,keyword_num-1):
+               print tags[0],data
+               if len(data) ==0:
+                   last_match_keynum=0
+               for i in range(1,keyword_num):
                    if len(data):
                        if i == 1:
                         data = Faq.objects.filter(question_keyword__contains=tags[0]).filter(question_keyword__contains=tags[1])
-                        last_match_keynum=2
+                        last_match_keynum=1
                        if i == 2:
                         data = Faq.objects.filter(question_keyword__contains=tags[0]).filter(question_keyword__contains=tags[1]) .filter(question_keyword__contains=tags[2])
-                        last_match_keynum=3
+                        last_match_keynum=2
                        if i == 3:
                             data = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
                                 question_keyword__contains=tags[1]).filter(question_keyword__contains=tags[2]).filter(question_keyword__contains=tags[3])
-                            last_match_keynum = 4
+                            last_match_keynum = 3
                        if i == 4:
                             data = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
                                 question_keyword__contains=tags[1]).filter(question_keyword__contains=tags[2]).filter(question_keyword__contains=tags[3]).filter(question_keyword__contains=tags[4])
-                            last_match_keynum = 5
+                            last_match_keynum = 4
                    else:
+                        print ("数据库中关键词没有完全匹配")
                         break
+
                print data,last_match_keynum
-               print ("模糊匹配数据库")
                if len(data)==0:
-                   print ("模糊匹配数据库失败调用图灵")
-                   url = 'http://www.tuling123.com/openapi/api'
-                   key = '37c58bfcfd4c403c9c4baaa3644822ef'
-                   query = {'key': key, 'info': sentence, 'userid': '1'}
-                   headers = {'Content-type': 'text/html', 'charset': 'utf-8'}
-                   r = requests.get(url, params=query, headers=headers)
-                   json_data = r.json()
-                   count = Faq.objects.count()
-                   print count
-                   Faq.objects.create(id=count+1,question_content=sentence,answer_content=json_data["text"], question_keyword=keyword, teacher_wegiht=1,
-                                      student_evaluation=50.00)
+                   temp_match_num = [0 for x in range(1000)]
+                   k = 0
+                   print ("数据库中关键词没有完全匹配，进行语句相似度匹配")
+                   question = Faq.objects.all()
+                   temp_match =float(difflib.SequenceMatcher(None, sentence, question[0].question_content.encode("utf-8")).ratio())
+                   for i in range(0, len(question)):
+                       print difflib.SequenceMatcher(None, sentence,
+                                                     question[i].question_content.encode("utf-8")).ratio()
+                       if difflib.SequenceMatcher(None, sentence, question[i].question_content.encode("utf-8")).ratio() > temp_match or difflib.SequenceMatcher(None, sentence,
+                                                                                                question[i].question_content.encode("utf-8")).ratio() == temp_match:
+                           if difflib.SequenceMatcher(None, sentence, question[
+                               i].question_content.encode("utf-8")).ratio() > 0.8 or difflib.SequenceMatcher(None, sentence, question[
+                               i].question_content.encode("utf-8")).ratio() == 0.8:
+                               temp_match = difflib.SequenceMatcher(None, sentence,
+                                                                    question[i].question_content.encode("utf-8")).ratio()
+                               temp_match_num[i] = question[i].id
+                               k=k+1
+                   maxmatch = 0.8
+                   answerid = 0
+                   print  "匹配语句条数："
+                   print k
+                   if k == 0:
+                       json_data["answerid"]=0
+                       json_data["text"]="知识库没有答案"
+                       print ("数据库语句匹配失败，进行部分关键词匹配")
+                       if last_match_keynum ==0:
+                           json_data['text'] = "知识库没有答案"
+                           json_data['answerid'] = 0
+                       if last_match_keynum == 1:
+                           answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).order_by(
+                               '-visit_wegiht')
+                           json_data['text'] = answerdata[0].answer_content
+                           json_data['answerid'] = 0
+                       if last_match_keynum == 2:
+                           answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
+                               question_keyword__contains=tags[1]).order_by(
+                               '-visit_wegiht')
+                           json_data['text'] = answerdata[0].answer_content
+                           json_data['answerid'] = 0
+                       if last_match_keynum == 3:
+                           answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
+                               question_keyword__contains=tags[1]).filter(question_keyword__contains=tags[2]).order_by(
+                               '-visit_wegiht')
+                           json_data['text'] = answerdata[0].answer_content
+                           json_data['answerid'] = 0
+                       if last_match_keynum == 4:
+                           answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
+                               question_keyword__contains=tags[1]).filter(question_keyword__contains=tags[2]).filter(
+                               question_keyword__contains=tags[3]).order_by(
+                               '-visit_wegiht')
+                           json_data['text'] = answerdata[0].answer_content
+                           json_data['answerid'] = 0
+                   else:
+                       for j in range(0, 1000):
+                           if temp_match_num[j]==0:
+                               continue
+                           else:
+                               if maxmatch < float(difflib.SequenceMatcher(None, sentence, question[temp_match_num[j]-1].question_content.encode("utf-8")).ratio()) or maxmatch ==float(difflib.SequenceMatcher(None, sentence, question[temp_match_num[j]-1].question_content.encode("utf-8")).ratio()):
+                                   maxweight=float(difflib.SequenceMatcher(None, sentence, question[temp_match_num[j]-1].question_content.encode("utf-8")).ratio())
+                                   answerid = j+1
+                       sentencemessage = Faq.objects.get(id=answerid)
+                       count = Faq.objects.count()
+                       json_data['text']=sentencemessage.answer_content
+                       json_data['answerid'] = sentencemessage.id
+                       sentencemessage.visit_wegiht+=1
+                       sentencemessage.save()
+                       model = Faq(id=count + 1, question_content=sentence, answer_content=json_data["text"],
+                                   question_keyword=keyword, visit_wegiht=1,baidu_answer=json_data["baidutext"])
+                       model.save()
+                       json_data['answerid'] = model.id
                else:
-                   if last_match_keynum == 1:
-                       answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).order_by('-teacher_wegiht').order_by('-student_evaluation')
-                       print ("按teacher倒排序")
-                       print answerdata[0].answer_content
-                   if last_match_keynum == 2:
-                       answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
-                           question_keyword__contains=tags[1]).order_by('-teacher_wegiht').order_by('-student_evaluation')
-                       print ("按teacher倒排序")
-                       print answerdata[0].answer_content
-                   if last_match_keynum == 3:
-                       answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
-                           question_keyword__contains=tags[1]).filter(question_keyword__contains=tags[2]).order_by('-teacher_wegiht').order_by('-student_evaluation')
-                       print ("按teacher倒排序")
-                       print answerdata[0].answer_content
+                       print "关键词完全匹配"
+                       data.order_by('-visit_wegiht')[0].visit_wegiht+=1
+                       data.order_by('-visit_wegiht')[0].save()
+                       json_data['text'] = data.order_by('-visit_wegiht')[0].answer_content
+                       json_data['answerid'] =  data.order_by('-visit_wegiht')[0].id
 
-                   if last_match_keynum == 4:
-                       answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
-                           question_keyword__contains=tags[1]).filter(question_keyword__contains=tags[2]).filter(
-                           question_keyword__contains=tags[3]).order_by('-teacher_wegiht').order_by('-student_evaluation')
-                       print ("按teacher倒排序")
-                       print answerdata[0].answer_content
 
-                   if last_match_keynum == 5:
-                       answerdata = Faq.objects.filter(question_keyword__contains=tags[0]).filter(
-                           question_keyword__contains=tags[1]).filter(question_keyword__contains=tags[2]).filter(
-                           question_keyword__contains=tags[3]).filter(question_keyword__contains=tags[4]).order_by('-teacher_wegiht').order_by('-student_evaluation')
-                       print ("按teacher倒排序")
-                       print answerdata[0].answer_content
-                   json_data['text'] = answerdata[0].answer_content
-                   json_data['answerid']=answerdata[0].id
             else:
-                print ("分词后没有关键词调用图灵")
-                url = 'http://www.tuling123.com/openapi/api'
-                key = '37c58bfcfd4c403c9c4baaa3644822ef'
-                query = {'key': key, 'info': sentence, 'userid': '1'}
-                headers = {'Content-type': 'text/html', 'charset': 'utf-8'}
-                r = requests.get(url, params=query, headers=headers)
-                json_data = r.json()
-                count=Faq.objects.count()
-                json_data['answerid'] =count+1
-                print count
-                Faq.objects.create(id=count+1,question_content=sentence,answer_content=json_data["text"], question_keyword=keyword,teacher_wegiht=1,student_evaluation=50.00)
+                json_data['text'] = "知识库没有答案"
+                json_data['answerid'] = 0
         else:
             print ("问题完全匹配本地数据库回答")
+            message.visit_wegiht=message.visit_wegiht+1
+            message.save()
             json_data['text'] = message.answer_content
             json_data['answerid'] = message.id
-        '''
-        KEYWORDS_URL = 'http://api.bosonnlp.com/keywords/analysis'
-        params = {'top_k': 2}
-        data = json.dumps(sentence)
-        headers = {'X-Token': '6rALcgNl.13077.nd_Ez638TQ-L'}
-        resp = requests.post(KEYWORDS_URL, headers=headers, params=params, data=data)
-        dict=resp.json()
-        s = str(dict).replace('u\'', '\'')
-        print s.decode("unicode-escape")
-        keyword_data={}
-        for weight, word in resp.json():
-              keyword_data[temptime]=word
-              print(weight, word)
-              temptime=temptime+1
-        json_data={}
-        print  keyword_data
 
-        json_data = {}
-        try:
-            message = Faq.objects.get(question_content=receive)
-        except ObjectDoesNotExist:
-            print temptime
-            if temptime >=3:
-              data = Faq.objects.filter(question_keyword__contains=keyword_data[0]).filter(question_keyword__contains=keyword_data[1]).filter(question_keyword__contains=keyword_data[2])
-            else:
-              data = Faq.objects.filter(question_keyword__contains=keyword_data[0])
-            print (data)
-            json_data['data'] = "对不起，我听不懂你在说什么，我会把你的问题转交给管理员。"
-        else:
-            json_data['data'] = message.answer_content
-        '''
-    '''
-    if request.method == 'POST':
-        receive = request.POST['question']
-        sentence=receive.encode("utf-8")
+        #图灵答案
         url = 'http://www.tuling123.com/openapi/api'
-        key='37c58bfcfd4c403c9c4baaa3644822ef'
-        query = {'key': key, 'info': sentence,'userid':'1'}
+        key = 'ae50cd76cf114d209e9a5cfdfe3e2adf'
+       # key = '37c58bfcfd4c403c9c4baaa3644822ef'
+        query = {'key': key, 'info': sentence, 'userid': '1'}
         headers = {'Content-type': 'text/html', 'charset': 'utf-8'}
         r = requests.get(url, params=query, headers=headers)
-        json_data = r.json()
-
-        #print("测试"+MeCab.VERSION)
-        try:
-            m = MeCab.Tagger("-d ./mecab_chinese_data_binary_v0.3/ -O pos")
-            temp=m.parse(sentence)
-            print m.parse(sentence)
-            print (type(temp))
-            t = m.parseToNode(sentence)
-            while t:
-                print t.surface.decode('string-escape')
-                t = t.next
-        except RuntimeError as e:
-            print("RuntimeError:", e);
-
-        if not isJVMStarted():
-           startJVM(getDefaultJVMPath(),"-Djava.class.path=./hanlp-1.3.2-release/hanlp-1.3.2.jar:./hanlp-1.3.2-release")
-           Hanlp = JClass('com.hankcs.hanlp.HanLP')
-        # 中文分词
-           temp = Hanlp.segment(sentence.decode("utf-8"));
-           print temp.toString()
-          # p=java.lang.Runtime.getRuntime()
-          # p.destory()
-           shutdownJVM()
-        json_data = {}
-        try:
-            message= Faq.objects.get(question_content=receive)
-        except ObjectDoesNotExist:
-            data = Faq.objects.filter(question_keyword__regex=sentence)
-            print (data)
-            json_data['data'] = "对不起，我听不懂你在说什么，我会把你的问题转交给管理员。"
+        tulingjson_data = r.json()
+        if tulingjson_data["code"]==200000:
+          json_data["tulingurl"]=tulingjson_data["url"]
         else:
-            json_data['data'] = message.answer_content
-'''
+            json_data["tulingurl"] = ""
+        if json_data['answerid']==0:
+            count = Faq.objects.count()
+            Faq.objects.create(id=count+1,question_content=sentence,answer_content=tulingjson_data["text"], question_keyword=keyword, visit_wegiht=1)
+            model = Faq(id=count + 1, question_content=sentence, answer_content=tulingjson_data["text"],
+                        question_keyword=keyword, visit_wegiht=1,baidu_answer=json_data["baidutext"])
+            model.save()
+            json_data['tulingtext'] = model.answer_content
+            json_data['tulinganswerid'] = model.id
+        else:
+            json_data['tulingtext'] =tulingjson_data["text"]
+            json_data['tulinganswerid'] =0
+            model=Faq.objects.get(id=json_data["answerid"])
+            model.baidu_answer=json_data["baidutext"]
+            model.save()
+
+
+        return JsonResponse(json_data)
+
+def spider_closing(spider):
+    """Activates on spider closed signal"""
+    log.msg("Closing reactor", level=log.INFO)
+    reactor.stop()
+def notThreadSafe(x):
+    """do something that isn't thread-safe"""
+
+
+def csanswer(request):
+    if request.method == 'POST':
+        receiveqid = request.POST['qid']
+        receiveanswer = request.POST['qanswer']
+        model = Faq.objects.get(id=receiveqid)
+        if request.POST['isbaidu']=="1":
+            receiveanswer=model.baidu_answer
+        model.answer_content = receiveanswer
+        model.save()
+        json_data = {}
+        return JsonResponse(json_data)
+
+
+def star(request):
+    if request.method == 'POST':
+        stars = request.POST['stareva']
+        wcontent = request.POST['wholecontent']
+        time=request.POST['time']
+    count = UserSession.objects.count()
+    model = UserSession(id=count + 1, content=wcontent,time=time,user_evalution=stars)
+    model.save()
+    json_data = {}
     return JsonResponse(json_data)
 
-
-def evaluation(request):
+def defineanswer(request):
     if request.method == 'POST':
-        receiveid = request.POST['i']
-        receiveevaluation=request.POST['evaluation']
-        print ("answer id ")
-        print receiveid
-        modifiers = Faq.objects.get(id=receiveid)
-        print  type(modifiers)
-
-        modifiers=Faq.objects.get(id=receiveid)
-        if receiveevaluation==1:
-            modifiers.teacher_wegiht=modifiers.teacher_wegiht+1
-            modifiers.student_evaluation = modifiers.student_evaluation*0.02+modifiers.student_evaluation
-            modifiers.save()
-        else:
-            modifiers.teacher_wegiht = modifiers.teacher_wegiht - 1
-            modifiers.student_evaluation = modifiers.student_evaluation-modifiers.student_evaluation * 0.02
-            modifiers.save()
-        json_data={}
-        return  JsonResponse(json_data)
+        defineqid = request.POST['deqid']
+        define_answer = request.POST['deanswer']
+        print  defineqid, define_answer
+        model = Faq.objects.get(id=defineqid)
+        model.answer_content=define_answer
+        model.save()
+    json_data = {}
+    return JsonResponse(json_data)
